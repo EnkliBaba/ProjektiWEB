@@ -127,7 +127,6 @@ body{
     bottom: -4px;
     left: 20px;
 }
-
 #mobile{
     display: none;
     align-items: center;
@@ -792,4 +791,114 @@ footer a:hover{
     #prodetails .single-pro-details {
         width: 100%;
     }
+}
+
+/*login register*/
+
+.btnLogin{
+    width: 100px;
+    height: 35px;
+    border: 2px solid #fff;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    background-color: #041e42;
+    color: white;
+    
+}
+
+.btnLogin:hover{
+    background-color: #34537e;
+}
+
+bodyy{
+    background: url(images/background/b1.jpg);
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+}
+
+.container1 {
+    width: 400px;
+    background: rgba(49, 45, 45, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(50px);
+    
+}
+
+.container1 h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: white;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+.btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #041e42;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background-color:#26426891;
+}
+
+.toggle-link {
+    text-align: center;
+    margin-top: 10px;
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 10px;
+}
+.homepage{
+    color: #007bff;
+}
+.forgot-password {
+    padding: 10px;
+    align-items: start;
+    margin-bottom: 50px;
+}
+
+.forgot-password a {
+    color: #ffffff; 
+    text-decoration: none;
+    font-size: 14px; 
+    transition: color 0.3s ease; 
+}
+
+.forgot-password a:hover {
+    color: #00bfff; 
+    text-decoration: underline; 
 }
