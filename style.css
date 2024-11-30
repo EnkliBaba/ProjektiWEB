@@ -112,6 +112,7 @@ body{
     transition: 0.3s ease;
 }
 
+
 #navbar li a:hover,
 #navbar li a.active{
     color:rgba(30, 40, 131, 0.918);
@@ -976,21 +977,4 @@ bodyy{
 }
 .homepage{
     color: #007bff;
-}
-.forgot-password {
-    padding: 10px;
-    align-items: start;
-    margin-bottom: 50px;
-}
-
-.forgot-password a {
-    color: #ffffff; 
-    text-decoration: none;
-    font-size: 14px; 
-    transition: color 0.3s ease; 
-}
-
-.forgot-password a:hover {
-    color: #00bfff; 
-    text-decoration: underline; 
 }
