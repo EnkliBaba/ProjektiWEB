@@ -1044,3 +1044,7 @@ padding-bottom: 15px;
     margin-right: 10px;
     border: 3px solid #818ea0;
   }
+  #storm-details .normal:hover {
+    background-color: #041e42;
+    color: #fff;
+  }
