@@ -18,7 +18,7 @@
     </div>
 
     <div class="titlee">
-        <p>Perdoruesit e Regjistruar</p>
+        <h4>Perdoruesit e Regjistruar</h4>
     </div>
 
  
@@ -39,7 +39,7 @@
     </div>
 
     <div class="titlee">
-        <p>Contact Table</p>
+        <h4>Contact Table</h4>
     </div>
 
     <div class="contact-table">

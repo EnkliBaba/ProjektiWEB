@@ -1,4 +1,3 @@
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css');
 body{
     margin: 0%;
     background-image: url(Img/abstract-gray-mosaic-polygon-surfaced-background.jpg);
@@ -304,80 +303,4 @@ footer{
     .social-logo{
         margin-left: 0em;
     }
-}
-#header{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 80px;
-    background: #E3E6F3;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
-    z-index: 999;
-    position: sticky;
-    top: 0;
-    left: 0;
-
-}
-
-#navbar{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#navbar li{
-    list-style: none;
-    padding: 0 20px;
-    position: relative;
-
-}
-
-#navbar li a{
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 600;
-    color: #1a1a1a;
-    transition: 0.3s ease;
-}
-
-
-#navbar li a:hover,
-#navbar li a.active{
-    color:rgba(30, 40, 131, 0.918);
-}
-
-#navbar li a.active::after,
-#navbar li a:hover::after{
-    content: "";
-    width: 30%;
-    height: 2px;
-    background: rgba(30, 40, 131, 0.918);
-    position: absolute;
-    bottom: -4px;
-    left: 20px;
-}
-#mobile{
-    display: none;
-    align-items: center;
-}
-
-#close{
-    display: none;
-}
-.btnLogin{
-    width: 100px;
-    height: 35px;
-    border: 2px solid #fff;
-    border-radius: 10px;
-    text-align: center;
-    font-size: 16px;
-    cursor: pointer;
-    text-decoration: none;
-    background-color: #041e42;
-    color: white;
-    
-}
-
-.btnLogin:hover{
-    background-color: #34537e;
 }
