@@ -8,25 +8,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <section id="header">
-        <a href="#"><img src="images/orgi/logo1.png" class="logo" alt="" width="130px" height="50px"></a>
-        <div>
-            <ul id="navbar">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="shop.html">Shop</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="contact.html">Contact</a></li>
-                <li id="lg-bag"><a href="card.html"><i class="fas fa-shopping-cart"></i></a></li>
-                <li><a  href="login.html"><button class="btnLogin">Login</button></a></li>
-                <a href="#" id="close"><i class="fas fa-times"></i></a>
-            </ul>
-        </div>
-        <div id="mobile">
-            <li><a href="card.html"><i class="fas fa-shopping-cart"></i></a></li>
-            <i id="bar" class="fas fa-outdent"></i>
-        </div>
-    </section>
+    <?php include 'header.php'; ?>
 
         <section id="page-header">
             <h2>#KnowUs</h2>

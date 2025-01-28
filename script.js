@@ -51,3 +51,4 @@ function register() {
         alert('Please fill in all fields.');
     }
 }
+
