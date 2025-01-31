@@ -1,3 +1,86 @@
+<?php
+session_start();
+
+class Database {
+    private $host = 'localhost';
+    private $db_name = 'shop';
+    private $username = 'root'; 
+    private $password = ''; 
+    public $conn;
+
+    public function dbConnection() {
+        $this->conn = null;
+        try {
+            $this->conn = new PDO("mysql:host={$this->host};dbname={$this->db_name}", $this->username, $this->password);
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $exception) {
+            echo "Connection error: " . $exception->getMessage();
+        }
+        return $this->conn;
+    }
+}
+
+class Product {
+    private $conn;
+
+    public function __construct() {
+        $database = new Database();
+        $this->conn = $database->dbConnection();
+    }
+
+    public function getAllProducts() {
+        $query = "SELECT * FROM products";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+}
+
+class User {
+    private $conn;
+
+    public function __construct() {
+        $database = new Database();
+        $this->conn = $database->dbConnection();
+    }
+
+    public function register($username, $password, $email) {
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $query = "INSERT INTO users (username, password, email) VALUES (:username, :password, :email)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':password', $hashed_password);
+        $stmt->bindParam(':email', $email);
+        
+        return $stmt->execute();
+    }
+}
+
+
+$productObj = new Product();
+$userObj = new User();
+
+
+$products = $productObj->getAllProducts();
+
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $email = $_POST['email'];
+
+    if (!empty($username) && !empty($password) && !empty($email)) {
+        if ($userObj->register($username, $password, $email)) {
+            echo "Regjistrimi ishte i suksesshëm!";
+        } else {
+            echo "Dështoi regjistrimi!";
+        }
+    } else {
+        echo "Të gjitha fushat janë të detyrueshme.";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,14 +96,14 @@
     <a href="#"><img src="images/orgi/logo1.png" class="logo" alt="" width="130px" height="50px"></a>
     <div>
         <ul id="navbar">
-            <li><a   href="index.php">Home</a></li>
+            <li><a href="index.php">Home</a></li>
             <li><a class="active" href="shop.php">Shop</a></li>
-            <li><a  href="blog.php">Blog</a></li>
+            <li><a href="blog.php">Blog</a></li>
             <li><a href="about.php">About</a></li>
             <li><a href="contact.php">Contact</a></li>
             <li id="lg-bag"><a href="card.php"><i class="fas fa-shopping-cart"></i></a></li>
             <li><a href="login.php"><button class="btnLogin">Login</button></a></li>
-            <a href="#" id="close"><i class="fas fa-times"></i></a>
+            <a href="#" id="close"><i class="fas fa-times"></ i></a>
         </ul>
     </div>
     <div id="mobile">
@@ -29,22 +112,33 @@
     </div>
 </section>
 
-    <section id="page-header">
-        
-        <h2>#stayathome</h2>
-        
-        <p>Save more with coupons & up to 70& off</p>
-        
-    </section>
+<section id="page-header">
+    <h2>#stayathome</h2>
+    <p>Save more with coupons & up to 70% off</p>
+</section>
 
+<section id="slider">
+    <div class="slides">
+        <div class="slide fade">
+            <img src="images/slider1.jpg" style="width:100%">
+        </div>
+        <div class="slide fade">
+            <img src="images/slider2.jpg" style="width:100%">
+        </div>
+        <div class="slide fade">
+            <img src="images/slider3.jpg" style="width:100%">
+        </div>
+    </div>
+</section>
 
-    <section id="product1" class="section-p1">
-        <div class="pro-container" onclick="window.location.href='sproduct.html';">
-            <div class="pro">
-                <img src="images/Products/product1.jpg" alt="">
+<section id="product1" class="section-p1">
+    <div class="pro-container">
+        <?php foreach ($products as $product): ?>
+            <div class="pro" onclick="window.location.href='sproduct.html';">
+                <img src="<?php echo $product['image']; ?>" alt="">
                 <div class="des">
                     <span>Zara</span>
-                    <h5>CROPPED FAUX FUR JACKET</h5>
+                    <h5><?php echo $product['name']; ?></h5>
                     <div class="star">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
@@ -52,321 +146,96 @@
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
                     </div>
-                    <h4>$69.95</h4>
+                    <h4>$<?php echo number_format($product['price'], 2); ?></h4>
                 </div>
                 <a href="#"><i class="fa-solid fa-cart-shopping cart" style="color: #088178;"></i></a>
             </div>
-            <div class="pro">
-                <img src="images/Products/product4.jpg" alt="">
-                <div class="des">
-                    <span>Zara</span>
-                    <h5>DOWN PUFFER JACKET</h5>
-                    <div class="star">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <h4>$99.95</h4>
-                </div>
-                <a href="#"><i class="fa-solid fa-cart-shopping cart" style="color: #088178;"></i></a>
-                </div>
-                <div class="pro">
-                    <img src="images/Products/product5.jpg" alt="">
-                    <div class="des">
-                        <span>Zara</span>
-                        <h5>ZIP NECK SWEATSHIRT</h5>
-                        <div class="star">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <h4>$29.95</h4>
-                    </div>
-                    <a href="#"><i class="fa-solid fa-cart-shopping cart" style="color: #088178;"></i></a>
-                    </div>
-                    <div class="pro">
-                        <img src="images/Products/product6.jpg" alt="">
-                        <div class="des">
-                            <span>Zara</span>
-                            <h5>COMBINED PRINT SWEATSHIRT</h5>
-                            <div class="star">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <h4>$35.95</h4>
-                        </div>
-                        <a href="#"><i class="fa-solid fa-cart-shopping cart" style="color: #088178;"></i></a>
-                        </div>
-                        <div class="pro">
-                            <img src="images/Products/product2.jpg" alt="">
-                            <div class="des">
-                                <span>Zara</span>
-                                <h5>COLLECTION FAUX FUR JACKET</h5>
-                                <div class="star">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <h4>$89.95</h4>
-                            </div>
-                            <a href="#"><i class="fa-solid fa-cart-shopping cart" style="color: #088178;"></i></a>
-                            </div>
-                            <div class="pro">
-                                <img src="images/Products/product3.jpg" alt="">
-                                <div class="des">
-                                    <span>Zara</span>
-                                    <h5>DOUBLE-FACED SHORT JACKET</h5>
-                                    <div class="star">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                    </div>
-                                    <h4>$59.95</h4>
-                                </div>
-                                <a href="#"><i class="fa-solid fa-cart-shopping cart" style="color: #088178;"></i></a>
-                                </div>
-                                <div class="pro">
-                                    <img src="images/Products/product8.jpg" alt="">
-                                    <div class="des">
-                                        <span>Zara</span>
-                                        <h5>OVERSIZED BLACK HOODIE</h5>
-                                        <div class="star">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </div>
-                                        <h4>$27.95</h4>
-                                    </div>
-                                    <a href="#"><i class="fa-solid fa-cart-shopping cart" style="color: #088178;"></i></a>
-                                    </div>
-                                    <div class="pro">
-                                        <img src="images/Products/product7.jpg" alt="">
-                                        <div class="des">
-                                            <span>Zara</span>
-                                            <h5>OPEN CROPPED BLAZER</h5>
-                                            <div class="star">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                            <h4>$39.95</h4>
-                                        </div>
-                                        <a href="#"><i class="fa-solid fa-cart-shopping cart" style="color: #088178;"></i></a>
-                                        </div>
-                                        <div class="pro">
-                                            <img src="images/arrivals/a1.jpg" alt="">
-                                            <div class="des">
-                                                <span>Zara</span>
-                                                <h5>RUBBERISED PUFFER GILET</h5>
-                                                <div class="star">
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                </div>
-                                                <h4>$29.95</h4>
-                                            </div>
-                                            <a href="#"><i class="fa-solid fa-cart-shopping cart" style="color: #088178;"></i></a>
-                                        </div>
-                                        <div class="pro">
-                                            <img src="images/arrivals/a2.jpg" alt="">
-                                            <div class="des">
-                                                <span>Zara</span>
-                                                <h5>DOWN PADDED JACKET</h5>
-                                                <div class="star">
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                </div>
-                                                <h4>$99.95</h4>
-                                            </div>
-                                            <a href="#"><i class="fa-solid fa-cart-shopping cart" style="color: #088178;"></i></a>
-                                            </div>
-                                            <div class="pro">
-                                                <img src="images/arrivals/a3.jpg" alt="">
-                                                <div class="des">
-                                                    <span>Zara</span>
-                                                    <h5>PADDED HOODED JACKET</h5>
-                                                    <div class="star">
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                    </div>
-                                                    <h4>69.95</h4>
-                                                </div>
-                                                <a href="#"><i class="fa-solid fa-cart-shopping cart" style="color: #088178;"></i></a>
-                                                </div>
-                                                <div class="pro">
-                                                    <img src="images/arrivals/a4.jpg" alt="">
-                                                    <div class="des">
-                                                        <span>Zara</span>
-                                                        <h5>SHORT PUFFER ANORAK</h5>
-                                                        <div class="star">
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                        </div>
-                                                        <h4>$39.95</h4>
-                                                    </div>
-                                                    <a href="#"><i class="fa-solid fa-cart-shopping cart" style="color: #088178;"></i></a>
-                                                    </div>
-                                                    <div class="pro">
-                                                        <img src="images/arrivals/a5.jpg" alt="">
-                                                        <div class="des">
-                                                            <span>Zara</span>
-                                                            <h5>FLEECE BOMBER JACKET</h5>
-                                                            <div class="star">
-                                                                <i class="fas fa-star"></i>
-                                                                <i class="fas fa-star"></i>
-                                                                <i class="fas fa-star"></i>
-                                                                <i class="fas fa-star"></i>
-                                                                <i class="fas fa-star"></i>
-                                                            </div>
-                                                            <h4>$27.95</h4>
-                                                        </div>
-                                                        <a href="#"><i class="fa-solid fa-cart-shopping cart" style="color: #088178;"></i></a>
-                                                        </div>
-                                                        <div class="pro">
-                                                            <img src="images/arrivals/a6.jpg" alt="">
-                                                            <div class="des">
-                                                                <span>Zara</span>
-                                                                <h5>VARSITY SWEATSHIRT</h5>
-                                                                <div class="star">
-                                                                    <i class="fas fa-star"></i>
-                                                                    <i class="fas fa-star"></i>
-                                                                    <i class="fas fa-star"></i>
-                                                                    <i class="fas fa-star"></i>
-                                                                    <i class="fas fa-star"></i>
-                                                                </div>
-                                                                <h4>$17.95</h4>
-                                                            </div>
-                                                            <a href="#"><i class="fa-solid fa-cart-shopping cart" style="color: #088178;"></i></a>
-                                                            </div>
-                                                            <div class="pro">
-                                                                <img src="images/arrivals/a7.jpg" alt="">
-                                                                <div class="des">
-                                                                    <span>Zara</span>
-                                                                    <h5>DENIM HOODIE</h5>
-                                                                    <div class="star">
-                                                                        <i class="fas fa-star"></i>
-                                                                        <i class="fas fa-star"></i>
-                                                                        <i class="fas fa-star"></i>
-                                                                        <i class="fas fa-star"></i>
-                                                                        <i class="fas fa-star"></i>
-                                                                    </div>
-                                                                    <h4>$39.95</h4>
-                                                                </div>
-                                                                <a href="#"><i class="fa-solid fa-cart-shopping cart" style="color: #088178;"></i></a>
-                                                                </div>
-                                                                <div class="pro">
-                                                                    <img src="images/arrivals/a8.jpg" alt="">
-                                                                    <div class="des">
-                                                                        <span>Zara</span>
-                                                                        <h5>MOCK NECK CARDIGAN WITH ZIP</h5>
-                                                                        <div class="star">
-                                                                            <i class="fas fa-star"></i>
-                                                                            <i class="fas fa-star"></i>
-                                                                            <i class="fas fa-star"></i>
-                                                                            <i class="fas fa-star"></i>
-                                                                            <i class="fas fa-star"></i>
-                                                                        </div>
-                                                                        <h4>$39.95</h4>
-                                                                    </div>
-                                                                    <a href="#"><i class="fa-solid fa-cart-shopping cart" style="color: #088178;"></i></a>
-                                                                    </div>
-                                    </div>
-    </section>
+        <?php endforeach; ?>
+    </div>
+</section>
 
-    <section id="pagination" class="section-p1">
-        <a href="#">1</a>
-        <a href="#">2</a>
-        <a href="#"><i class="fa-solid fa-right-long"></i></a>
-    </section>
+<section id="pagination" class="section-p1">
+    <a href="#">1</a>
+    <a href="#">2</a>
+    <a href="#"><i class="fa-solid fa-right-long"></i></a>
+</section>
 
-    <section id="newsletter" class="section-p1 section-m1">
-        <div class="newstexts">
-            <h4>Sign Up For NewsLetters</h4>
-            <p>Get E-mail updates about our latest shop and <span>special offers.</span></p>
-        </div>
-        <div class="form">
-            <input type="text" placeholder="Your email addres">
-            <button class="normal">Sign Up</button>
-        </div>
-    </section>
-    
-    <footer class="section-p1">
-        <div class="cool">
-            <img src="images/orgi/logo1.png" class="logo" alt="" width="130px" height="50px"></a>
-            <h4>Contact</h4>
-            <p><strong>Address:</strong>500 Rruga C, Bedri Berisha, Prishtine </p>
-            <p><strong>Phone:</strong> +383 48 xxx xxx/ +383 49 xxx xxx</p>
-            <p><strong>Hours:</strong> 10:00 - 18:00 Mon - Sat</p>
-            <div class="follow">
-                <h4>Follow us</h4>
-                <div class="icon">
-                    <i class="fab fa-facebook-f"></i>
-                    <i class="fab fa-twitter"></i>
-                    <i class="fab fa-instagram"></i>
-                    <i class="fab fa-pinterest-p"></i>
-                    <i class="fab fa-youtube"></i>
-                </div>
+<section id="newsletter" class="section-p1 section-m1">
+    <div class="newstexts">
+        <h4>Sign Up For NewsLetters</h4>
+        <p>Get E-mail updates about our latest shop and <span>special offers.</span></p>
+    </div>
+    <div class="form">
+        <input type="text" placeholder="Your email address">
+        <button class="normal">Sign Up</button>
+    </div>
+</section>
+
+
+<footer class="section-p1">
+    <div class="cool">
+        <img src="images/orgi/logo1.png" class="logo" alt="" width="130px" height="50px"></a>
+        <h4>Contact</h4>
+        <p><strong>Address:</strong>500 Rruga C, Bedri Berisha, Prishtine </p>
+        <p><strong>Phone:</strong> +383 48 xxx xxx/ +383 49 xxx xxx</p>
+        <p><strong>Hours:</strong> 10:00 - 18:00 Mon - Sat</p>
+        <div class="follow">
+            <h4>Follow us</h4>
+            <div class="icon">
+                <i class="fab fa-facebook-f"></i>
+                <i class="fab fa-twitter"></i>
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-pinterest-p"></i>
+                <i class="fab fa-youtube"></i>
             </div>
         </div>
+    </div>
 
-        <div class="col">
-            <h4>About</h4>
-            <a href="#">About us</a>
-            <a href="#">Delivery Information</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms & Conditions</a>
-            <a href="#">Contact us</a>
+    <div class="col">
+        <h4>About</h4>
+        <a href="#">About us</a>
+        <a href="#">Delivery Information</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms & Conditions</a>
+        <a href="#">Contact us</a>
+    </div>
+
+    <div class="col">
+        <h4>My Account</h4>
+        <a href="#">Sign in</a>
+        <a href="#">View Cart</a>
+        <a href="#">My Wishlist</a>
+        <a href="#">Track My Order</a>
+        <a href="#">Help</a>
+    </div>
+
+    <div class="col install">
+        <h4>Install App</h4>
+        <p>From App Store or Google Play</p>
+        <div class="row">
+            <img src="images/pay/app.jpg" alt="">
+            <img src="images/pay/play.jpg" alt="">
         </div>
+        <p>Secured Payment Gateways</p>
+        <img src="images/pay/pay.png" alt="">
+    </div>
+</footer>
 
-        <div class="col">
-            <h4>My Account</h4>
-            <a href="#">Sign in</a>
-            <a href="#">View Cart</a>
-            <a href="#">My Wishlist</a>
-            <a href="#">Track My Order</a>
-            <a href="#">Help</a>
-        </div>
+<script>
+let slideIndex = 0;
+showSlides();
 
-        <div class="col install">
-            <h4>Install App</h4>
-            <p>From App Store or Google Play</p>
-            <div class="row">
-                <img src="images/pay/app.jpg" alt="">
-                <img src="images/pay/play.jpg" alt="">
-            </div>
-            <p>Secured Payment Gateways</p>
-            <img src="images/pay/pay.png" alt="">
-        </div>
-    </footer>
+function showSlides() {
+    let slides = document.getElementsByClassName("slide");
+    for (let i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";  
+    }
+    slideIndex++;
+    if (slideIndex > slides.length) {slideIndex = 1}    
+    slides[slideIndex - 1].style.display = "block";  
+    setTimeout(showSlides, 2000);
+}
+</script>
 
-
-
-    <script src="script.js"></script>
 </body>
 </html>
